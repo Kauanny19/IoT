@@ -1,7 +1,13 @@
 #include <math.h>
 #include "AdafruitIO_WiFi.h"
 
+//configurações da rede Wifi
+#define WIFI_SSID ""
+#define WIFI_PASS ""
 
+//Autenticação Adafruit IO
+#define IO_USERNAME ""
+#define IO_KEY ""
 
 AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 
