@@ -2,12 +2,12 @@
 #include "AdafruitIO_WiFi.h"
 
 //configurações da rede Wifi
-#define WIFI_SSID ""
-#define WIFI_PASS ""
+#define WIFI_SSID "..."
+#define WIFI_PASS "..."
 
 //Autenticação Adafruit IO
-#define IO_USERNAME ""
-#define IO_KEY ""
+#define IO_USERNAME "..."
+#define IO_KEY "..."
 
 AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 
@@ -19,7 +19,7 @@ float temp_atual = 0;
 float temp_anterior = -1;
 
 //Variável / ponteiro para referenciar o feed temperatura
-AdafruitIO_Feed *temperatura = io.feed("Temperatura");
+AdafruitIO_Feed *botaoled = io.feed("botaoled");
 
 const float Rfixo = 10000.0; //Resistor do projeto
 const float Beta = 3950.0;
@@ -47,7 +47,7 @@ void setup() {
   Serial.println(io.statusText());
 
   // Configuração do callback, quando o feed receber(atualizar) um valor
-  temperatura -> onMessage(handleTemperatura);
+  botaoled -> onMessage(handleBotaoLed);
   // Registra a função de callback 
   // Ela será chamada sempre que o feed receber um novo dado
 

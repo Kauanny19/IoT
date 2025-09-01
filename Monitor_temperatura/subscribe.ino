@@ -14,3 +14,18 @@ void handleTemperatura(AdafruitIO_Data *data){
     digitalWrite(pinLed, LOW);
   }
 }
+
+void handleBotaoLed(AdafruitIO_Data *data){
+  String state = data->toString();
+
+
+  Serial.print(F("State do feed: "));
+  Serial.println(state);
+
+  if(state == "true"){
+    digitalWrite(pinLed, HIGH);
+  }
+  else{
+    digitalWrite(pinLed, LOW);
+  }
+}
