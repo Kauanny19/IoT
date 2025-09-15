@@ -34,7 +34,10 @@ AdafruitIO_Feed *temperatura = io.feed("Temperatura");
 AdafruitIO_Feed *ledFeed = io.feed("botaoled");
 AdafruitIO_Feed *botaoalarme = io.feed("botaoalarme");
 
-
+// Variáveis de controle
+bool alarmeAtivo = false;
+unsigned int distancia = 0;
+const int LIMITE_DISTANCIA = 15;
 
 const float Rfixo = 10000.0; // Resistor do projeto 
 const float Beta = 3950.0; 
@@ -65,24 +68,40 @@ void setup() {
 
   // Configuração do callback, quando o feed receber(atualizar) um valor
   // temperatura -> onMessage(handleTemperatura);
-  ledFeed->onMessage(handleBotaoLed);
-  //registra a função de callback 
-  // ela será chamada sempre que o feed receber um novo dado
+  // ledFeed->onMessage(handleBotaoLed);
+  botaoalarme -> onMessage(handleAlarme);
 
-
-
-  delay(2000);
+  Serial.println("Solicitando o estado inicial do alarme: ");
+  botaoalarme -> get();
+  
+  delay(1000);
 }
 
 void loop() {
-  //Manter a coneção com o Adafruit IO ativa
-  //io.run();
+  io.run();
   //publicacao(); //chamada da função publish
 
+  //Leitura do botão físico
+  if(digitalRead(BOTAO_FISICO) == 1){
+    delay(200);
+    alarmeAtivo = !alarmeAtivo;
+
+    botaoalarme -> save(String(alarmeAtivo ? "true" : "false"));
+    Serial.println(alarmeAtivo ? "Alarme ARMADO pelo botao fisico." : "Alarme DESARMADO pelo botao fisico.");
+  }
+
+  distancia = sonar.ping_cm();
   Serial.print(F("Distancia lida: "));
-  Serial.println(sonar.ping_cm());
-  testeLed();
-  testeBuzzer();
-  testeBotao(BOTAO_FISICO);
-  delay(500);
+  Serial.println(distancia);
+  Serial.println(" cm");
+
+  //ativação ou desativação do alarme
+  if(alarmeAtivo && distancia > 0 && distancia < LIMITE_DISTANCIA){
+    ativarAlerta();
+  }
+  else{
+    desligarAlerta();
+  }
+
+  delay(300);
 }
