@@ -20,6 +20,8 @@ AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 #define BOTAO_FISICO 26
 #define TRIG_PIN 12
 #define ECHO_PIN 14
+#define LED_DESARMADO 25
+#define LED_ARMADO 33
 
 //Configuração Ultrassonico
 #define MAX_DISTANCE 100
@@ -33,6 +35,7 @@ float temp_anterior = -1;
 AdafruitIO_Feed *temperatura = io.feed("Temperatura");
 AdafruitIO_Feed *ledFeed = io.feed("botaoled");
 AdafruitIO_Feed *botaoalarme = io.feed("botaoalarme");
+AdafruitIO_Feed *distanciaultrassom = io.feed("distanciaultrassom");
 
 // Variáveis de controle
 bool alarmeAtivo = false;
@@ -51,6 +54,8 @@ void setup() {
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(LED_ALARME, OUTPUT);
   pinMode(BOTAO_FISICO, INPUT);
+  pinMode(LED_DESARMADO, OUTPUT);
+  pinMode(LED_ARMADO, OUTPUT);
   Serial.begin(115200);
 
   while(!Serial);
@@ -74,7 +79,7 @@ void setup() {
   Serial.println("Solicitando o estado inicial do alarme: ");
   botaoalarme -> get();
   
-  delay(1000);
+  delay(300);
 }
 
 void loop() {
@@ -94,6 +99,12 @@ void loop() {
   Serial.print(F("Distancia lida: "));
   Serial.println(distancia);
   Serial.println(" cm");
+  
+  if(distancia != 0){
+    //só envia distancias válidas
+    distanciaultrassom -> save(distancia);  
+  }
+  
 
   //ativação ou desativação do alarme
   if(alarmeAtivo && distancia > 0 && distancia < LIMITE_DISTANCIA){
@@ -103,5 +114,5 @@ void loop() {
     desligarAlerta();
   }
 
-  delay(300);
+  delay(500);
 }

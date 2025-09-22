@@ -5,10 +5,14 @@ void handleAlarme(AdafruitIO_Data *data){
   Serial.println(valor);
 
   if(valor == "true"){
+    digitalWrite(LED_ARMADO, HIGH);
+    digitalWrite(LED_DESARMADO, LOW);
     alarmeAtivo = true;
     Serial.println("Alarme ARMADO pelo dash / app!");
   }else{
     alarmeAtivo = false;
+    digitalWrite(LED_ARMADO, LOW);
+    digitalWrite(LED_DESARMADO, HIGH);
     Serial.println("Alarme DESARMADO pelo dash / app!");
   }
 }
